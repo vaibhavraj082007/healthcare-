@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+:root {
+  /* RetinaShield Light Clinical Theme */
+  --rs-bg: #f8fafc;
+  --rs-bg-card: #ffffff;
+  --rs-bg-elevated: #f1f5f9;
+  
+  --rs-text: #0f172a; /* Navy text */
+  --rs-text-muted: #475569;
+  
+  --rs-primary: #0d9488; /* Teal accent */
+  --rs-primary-light: #14b8a6;
+  --rs-primary-dark: #0f766e;
+  
+  --rs-accent: #6366f1; /* Indigo for secondary actions */
+  
+  --rs-border: #e2e8f0;
+  
+  --rs-success: #16a34a;
+  --rs-warning: #d97706;
+  --rs-danger: #dc2626;
+  --rs-urgent: #b91c1c;
+
+  /* Severity Colors */
+  --rs-grade-0: #16a34a;
+  --rs-grade-1: #d97706;
+  --rs-grade-2: #ea580c;
+  --rs-grade-3: #dc2626;
+  --rs-grade-4: #991b1b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--rs-bg);
+  color: var(--rs-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base layout adjustments for tablets (larger touch targets) */
+button, a, input, select {
+  touch-action: manipulation;
+}
+
+/* Glass Morphism Card (Light) */
+.glass-card {
+  background: var(--rs-bg-card);
+  border: 1px solid var(--rs-border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(13, 148, 136, 0.3);
+  box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.1);
+}
+
+/* Research Disclaimer Banner */
+.research-disclaimer {
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  color: #854d0e;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Severity Badge */
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.severity-badge.grade-0 { background: #dcfce7; color: var(--rs-grade-0); border: 1px solid #bbf7d0; }
+.severity-badge.grade-1 { background: #fef9c3; color: var(--rs-grade-1); border: 1px solid #fef08a; }
+.severity-badge.grade-2 { background: #ffedd5; color: var(--rs-grade-2); border: 1px solid #fed7aa; }
+.severity-badge.grade-3 { background: #fee2e2; color: var(--rs-grade-3); border: 1px solid #fecaca; }
+.severity-badge.grade-4 { background: #fef2f2; color: var(--rs-grade-4); border: 1px solid #fca5a5; }
+.severity-badge.untrained { background: #f1f5f9; color: var(--rs-text-muted); border: 1px solid #e2e8f0; }
+
+/* Urgency Tags */
+.urgency-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.urgency-tag.none { background: #dcfce7; color: var(--rs-success); }
+.urgency-tag.routine { background: #fef9c3; color: var(--rs-warning); }
+.urgency-tag.priority { background: #ffedd5; color: var(--rs-grade-2); }
+.urgency-tag.urgent {
+  background: #fee2e2;
+  color: var(--rs-urgent);
+  animation: urgent-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes urgent-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Navigation */
+.nav-link {
+  color: var(--rs-text-muted);
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: var(--rs-primary);
+  background: #f0fdfa;
+}
+
+.nav-link.active {
+  color: var(--rs-primary-dark);
+  background: #ccfbf1;
+  font-weight: 600;
+}
+
+/* Buttons - Large targets for tablets */
+.btn-primary {
+  background: var(--rs-primary);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--rs-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px -1px rgba(13, 148, 136, 0.3);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--rs-text);
+  border: 1px solid var(--rs-border);
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover {
+  border-color: var(--rs-primary);
+  background: #f8fafc;
+  color: var(--rs-primary-dark);
+}
+
+/* Stats Card */
+.stat-card {
+  background: var(--rs-bg-card);
+  border: 1px solid var(--rs-border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--rs-primary);
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--rs-text);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: var(--rs-text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ccfbf1;
+  border-top-color: var(--rs-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--rs-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Utility Forms */
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--rs-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--rs-text);
+  background: white;
+  transition: border-color 0.2s;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--rs-primary);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+}
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--rs-text);
+  font-size: 0.95rem;
+}

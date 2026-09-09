@@ -1,0 +1,78 @@
+# =============================================================================
+# RetinaShield — Docker Compose (Development)
+# =============================================================================
+# Usage:
+#   docker compose up -d postgres   # Start database only
+#   docker compose up               # Start all services
+# =============================================================================
+
+version: "3.9"
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: retinashield-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-retinashield}
+      POSTGRES_USER: ${POSTGRES_USER:-retinashield}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-retinashield}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # FastAPI Backend
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: retinashield-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-retinashield}:${POSTGRES_PASSWORD:-devpassword}@postgres:5432/${POSTGRES_DB:-retinashield}
+      MATLAB_MODE: ${MATLAB_MODE:-fallback}
+      IMAGE_STORAGE_PATH: /app/data/images
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      PIPELINE_VERSION: ${PIPELINE_VERSION:-0.1.0-dev}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend/app:/app/app
+      - image_data:/app/data/images
+      - ./matlab:/app/matlab:ro
+
+  # ---------------------------------------------------------------------------
+  # Next.js Frontend
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: retinashield-web
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8000}
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
+    driver: local
+  image_data:
+    driver: local

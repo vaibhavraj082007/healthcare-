@@ -1,0 +1,235 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RetinaShield Analysis Result",
+  "description": "Research screening result — NOT an autonomous clinical diagnosis. Must be reviewed by a qualified ophthalmologist.",
+  "type": "object",
+  "required": ["analysis_id", "image_id", "pipeline_version", "timestamp", "disclaimer"],
+  "properties": {
+    "analysis_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for this analysis run"
+    },
+    "image_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Reference to the uploaded fundus image"
+    },
+    "patient_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Reference to the patient record"
+    },
+    "facility_id": {
+      "type": "string",
+      "description": "Identifier for the healthcare facility"
+    },
+    "pipeline_version": {
+      "type": "string",
+      "description": "Semantic version of the analysis pipeline (e.g., 0.1.0-dev)"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of analysis completion"
+    },
+    "disclaimer": {
+      "type": "string",
+      "const": "RESEARCH SCREENING RESULT — Not a clinical diagnosis. Must be reviewed by a qualified ophthalmologist."
+    },
+    "quality_assessment": {
+      "type": "object",
+      "description": "Image quality metrics from MATLAB IQA module",
+      "properties": {
+        "overall_quality": {
+          "type": "string",
+          "enum": ["good", "acceptable", "poor", "rejected"],
+          "description": "Composite quality verdict"
+        },
+        "brisque_score": {
+          "type": "number",
+          "description": "Blind/Referenceless Image Spatial Quality Evaluator score (lower = better)"
+        },
+        "sharpness_score": {
+          "type": "number",
+          "description": "Laplacian variance-based sharpness metric"
+        },
+        "illumination_uniformity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Uniformity of illumination across the fundus (1 = perfectly uniform)"
+        },
+        "field_of_view_adequate": {
+          "type": "boolean",
+          "description": "Whether the image captures sufficient retinal area"
+        },
+        "artifacts_detected": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of detected artifacts (e.g., 'dust', 'reflection', 'motion_blur')"
+        }
+      },
+      "required": ["overall_quality"]
+    },
+    "enhancement": {
+      "type": "object",
+      "description": "Enhancement outputs from MATLAB preprocessing",
+      "properties": {
+        "method": {
+          "type": "string",
+          "description": "Enhancement method applied (e.g., 'CLAHE_green_channel')"
+        },
+        "enhanced_image_path": {
+          "type": "string",
+          "description": "Path to the enhanced fundus image"
+        },
+        "green_channel_path": {
+          "type": "string",
+          "description": "Path to the extracted green channel image"
+        }
+      }
+    },
+    "structure_analysis": {
+      "type": "object",
+      "description": "Retinal structure segmentation from MATLAB",
+      "properties": {
+        "optic_disc": {
+          "type": "object",
+          "properties": {
+            "detected": { "type": "boolean" },
+            "center_x": { "type": "number" },
+            "center_y": { "type": "number" },
+            "radius": { "type": "number" },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "required": ["detected"]
+        },
+        "macula": {
+          "type": "object",
+          "properties": {
+            "detected": { "type": "boolean" },
+            "center_x": { "type": "number" },
+            "center_y": { "type": "number" },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "required": ["detected"]
+        },
+        "vasculature": {
+          "type": "object",
+          "properties": {
+            "segmentation_mask_path": { "type": "string" },
+            "vessel_density": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Ratio of vessel pixels to total retinal area"
+            },
+            "tortuosity_index": {
+              "type": "number",
+              "description": "Mean vessel tortuosity (arc-chord ratio)"
+            }
+          }
+        }
+      }
+    },
+    "severity_classification": {
+      "type": "object",
+      "description": "DR severity from MATLAB EfficientNet-B0",
+      "properties": {
+        "model": { "type": "string", "default": "EfficientNet-B0" },
+        "predicted_grade": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4,
+          "description": "DR severity grade: 0=No DR, 1=Mild, 2=Moderate, 3=Severe, 4=Proliferative"
+        },
+        "grade_label": {
+          "type": "string",
+          "enum": ["No DR", "Mild NPDR", "Moderate NPDR", "Severe NPDR", "Proliferative DR"]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence of the predicted grade"
+        },
+        "class_probabilities": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "minItems": 5,
+          "maxItems": 5,
+          "description": "Softmax probabilities for each of the 5 DR grades"
+        },
+        "gradcam_heatmap_path": {
+          "type": "string",
+          "description": "Path to the Grad-CAM explainability heatmap image"
+        },
+        "model_trained": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the model has been trained on real data (false = placeholder/untrained)"
+        }
+      },
+      "required": ["model", "model_trained"]
+    },
+    "lesion_detection": {
+      "type": "object",
+      "description": "YOLOv8-based lesion detection (Python service, not MATLAB)",
+      "properties": {
+        "model": { "type": "string", "default": "YOLOv8" },
+        "detections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lesion_type": {
+                "type": "string",
+                "enum": ["microaneurysm", "hemorrhage", "hard_exudate", "soft_exudate", "neovascularization"]
+              },
+              "bbox": {
+                "type": "object",
+                "properties": {
+                  "x_min": { "type": "number" },
+                  "y_min": { "type": "number" },
+                  "x_max": { "type": "number" },
+                  "y_max": { "type": "number" }
+                },
+                "required": ["x_min", "y_min", "x_max", "y_max"]
+              },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "required": ["lesion_type", "bbox", "confidence"]
+          }
+        },
+        "model_trained": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the YOLOv8 model has been trained on real lesion data"
+        }
+      },
+      "required": ["model", "model_trained"]
+    },
+    "referral_recommendation": {
+      "type": "object",
+      "description": "Rule-based referral suggestion derived from severity + lesion findings",
+      "properties": {
+        "urgency": {
+          "type": "string",
+          "enum": ["none", "routine", "priority", "urgent"],
+          "description": "none=No DR, routine=Mild, priority=Moderate/Severe, urgent=PDR or macular involvement"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Human-readable explanation of the referral recommendation"
+        },
+        "suggested_followup_weeks": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Suggested follow-up interval in weeks"
+        }
+      },
+      "required": ["urgency", "reason"]
+    }
+  }
+}

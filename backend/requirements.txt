@@ -1,0 +1,52 @@
+# =============================================================================
+# RetinaShield Backend — Python Dependencies
+# =============================================================================
+
+# --- Web Framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# --- Database ---
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.1
+greenlet==3.1.1
+
+# --- Schemas & Validation ---
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# --- Image Processing (Python fallback when MATLAB unavailable) ---
+Pillow==11.1.0
+opencv-python-headless==4.10.0.84
+scikit-image==0.25.0
+numpy==2.2.2
+
+# --- YOLOv8 Lesion Detection ---
+ultralytics==8.3.57
+
+# --- MATLAB Engine (installed separately from MATLAB installation) ---
+# matlabengine>=24.1  # Uncomment when MATLAB is installed
+
+# --- Security ---
+cryptography==44.0.0
+python-jose[cryptography]==3.3.0
+
+# --- Utilities ---
+httpx==0.28.1
+python-dotenv==1.0.1
+aiofiles==24.1.0
+
+# --- Testing ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.28.1
+
+# --- Data Processing & Pipeline ---
+pandas==2.2.3
+scikit-learn==1.6.0
+imagehash==4.3.1
+matplotlib==3.10.0
+seaborn==0.13.2
+tqdm==4.67.1

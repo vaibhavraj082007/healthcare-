@@ -1,0 +1,50 @@
+{
+  "severity_codes": {
+    "0": {
+      "grade": 0,
+      "label": "No DR",
+      "icd10": "E11.3x1",
+      "description": "No apparent diabetic retinopathy",
+      "referral_urgency": "none",
+      "followup_weeks": 52,
+      "color_hex": "#22c55e"
+    },
+    "1": {
+      "grade": 1,
+      "label": "Mild NPDR",
+      "icd10": "E11.321",
+      "description": "Mild non-proliferative diabetic retinopathy — microaneurysms only",
+      "referral_urgency": "routine",
+      "followup_weeks": 26,
+      "color_hex": "#eab308"
+    },
+    "2": {
+      "grade": 2,
+      "label": "Moderate NPDR",
+      "icd10": "E11.331",
+      "description": "Moderate non-proliferative diabetic retinopathy — more than just microaneurysms but less than severe NPDR",
+      "referral_urgency": "priority",
+      "followup_weeks": 13,
+      "color_hex": "#f97316"
+    },
+    "3": {
+      "grade": 3,
+      "label": "Severe NPDR",
+      "icd10": "E11.341",
+      "description": "Severe non-proliferative diabetic retinopathy — extensive intraretinal hemorrhages, venous beading, IRMA",
+      "referral_urgency": "priority",
+      "followup_weeks": 4,
+      "color_hex": "#ef4444"
+    },
+    "4": {
+      "grade": 4,
+      "label": "Proliferative DR",
+      "icd10": "E11.351",
+      "description": "Proliferative diabetic retinopathy — neovascularization, vitreous/preretinal hemorrhage",
+      "referral_urgency": "urgent",
+      "followup_weeks": 1,
+      "color_hex": "#dc2626"
+    }
+  },
+  "note": "ICD-10 codes are illustrative for the research prototype. Actual coding requires clinical determination."
+}

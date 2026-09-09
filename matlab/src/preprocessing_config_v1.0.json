@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "disclaimer": "These preprocessing parameters are versioned and must be kept consistent between training and inference.",
+  "resize": {
+    "target_size": [512, 512],
+    "pad_value": 0
+  },
+  "tiling": {
+    "extract_tiles": true,
+    "tile_size": [512, 512],
+    "overlap_ratio": 0.5
+  },
+  "denoising": {
+    "method": "median",
+    "kernel_size": [3, 3]
+  },
+  "illumination_normalization": {
+    "sigma": 30
+  },
+  "clahe": {
+    "conditional_trigger": {
+      "metric": "illumination_cv",
+      "threshold": 0.3
+    },
+    "clip_limit": 0.01,
+    "num_tiles": [8, 8],
+    "distribution": "uniform"
+  }
+}

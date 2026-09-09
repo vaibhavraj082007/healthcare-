@@ -1,0 +1,55 @@
+# Environment
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+venv/
+.venv/
+*.so
+
+# MATLAB
+matlab/models/*.mat
+matlab/models/*.onnx
+*.asv
+*.mex*
+
+# Data (private images and datasets)
+data/
+*.h5
+*.hdf5
+
+# Model weights
+*.pt
+*.pth
+*.onnx
+*.mat
+
+# Node
+node_modules/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite3
+venv_test/

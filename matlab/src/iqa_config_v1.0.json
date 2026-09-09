@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "disclaimer": "These thresholds are engineering heuristics and have not been clinically validated. They must be tuned using expert annotations.",
+  "resolution": {
+    "min_width": 500,
+    "min_height": 500
+  },
+  "plausibility": {
+    "min_fundus_ratio": 0.20,
+    "max_fundus_ratio": 0.95
+  },
+  "focus": {
+    "min_laplacian_variance_acceptable": 100,
+    "min_laplacian_variance_borderline": 30
+  },
+  "exposure": {
+    "underexposure_mean_intensity_limit": 25,
+    "overexposure_mean_intensity_limit": 230
+  },
+  "illumination": {
+    "max_cv_acceptable": 0.5,
+    "max_cv_borderline": 0.8
+  },
+  "glare": {
+    "max_saturated_pixels_ratio": 0.05
+  },
+  "clipping": {
+    "edge_padding_ratio": 0.05
+  }
+}
