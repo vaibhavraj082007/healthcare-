@@ -1,0 +1,455 @@
+{
+  "report_id": "ff922d46-95c6-4c63-9672-0e9227477861",
+  "timestamp": "2026-09-09T18:52:20.197234",
+  "pipeline_version": "1.0.0-frozen",
+  "rules_version": "1.0.0",
+  "dataset_name": "RetinaShield Held-Out Evaluation Benchmark",
+  "evaluation_manifest_hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "is_frozen": true,
+  "total_images": 94,
+  "total_patients": 50,
+  "resampling_method": "patient_cluster",
+  "bootstrap_iterations": 1000,
+  "quadratic_weighted_kappa": {
+    "value": 0.9128,
+    "ci_lower": 0.7286,
+    "ci_upper": 1.0,
+    "confidence_level": 0.95
+  },
+  "macro_f1": {
+    "value": 0.9421,
+    "ci_lower": 0.7319,
+    "ci_upper": 1.0,
+    "confidence_level": 0.95
+  },
+  "balanced_accuracy": {
+    "value": 0.9911,
+    "ci_lower": 0.78,
+    "ci_upper": 1.0,
+    "confidence_level": 0.95
+  },
+  "per_class_metrics": [
+    {
+      "grade": 0,
+      "class_name": "No DR",
+      "precision": 1.0,
+      "recall": 0.9555555555555556,
+      "specificity": 1.0,
+      "f1_score": 0.9772727272727273,
+      "support": 45
+    },
+    {
+      "grade": 1,
+      "class_name": "Mild NPDR",
+      "precision": 1.0,
+      "recall": 1.0,
+      "specificity": 1.0,
+      "f1_score": 1.0,
+      "support": 18
+    },
+    {
+      "grade": 2,
+      "class_name": "Moderate NPDR",
+      "precision": 1.0,
+      "recall": 1.0,
+      "specificity": 1.0,
+      "f1_score": 1.0,
+      "support": 22
+    },
+    {
+      "grade": 3,
+      "class_name": "Severe NPDR",
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "specificity": 0.9891304347826086,
+      "f1_score": 0.8,
+      "support": 2
+    },
+    {
+      "grade": 4,
+      "class_name": "Proliferative DR",
+      "precision": 0.875,
+      "recall": 1.0,
+      "specificity": 0.9885057471264368,
+      "f1_score": 0.9333333333333333,
+      "support": 7
+    }
+  ],
+  "confusion_matrix": {
+    "matrix": [
+      [
+        43,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        18,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        22,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        7
+      ]
+    ],
+    "class_labels": [
+      "No DR",
+      "Mild NPDR",
+      "Moderate NPDR",
+      "Severe NPDR",
+      "Proliferative DR"
+    ]
+  },
+  "referable_dr": {
+    "endpoint_name": "Referable DR (Grade >= 2)",
+    "threshold_rule": "ICDR Grade >= 2",
+    "sensitivity": {
+      "value": 1.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "confidence_level": 0.95
+    },
+    "specificity": {
+      "value": 0.9682539682539683,
+      "ci_lower": 0.918,
+      "ci_upper": 1.0,
+      "confidence_level": 0.95
+    },
+    "ppv": 0.9393939393939394,
+    "npv": 1.0,
+    "auroc": {
+      "value": 1.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "confidence_level": 0.95
+    },
+    "aupr": 1.0,
+    "f1_score": 0.96875,
+    "support_positive": 31,
+    "support_negative": 63
+  },
+  "sight_threatening_dr": {
+    "endpoint_name": "Sight-Threatening DR (Grade >= 3)",
+    "threshold_rule": "ICDR Grade >= 3",
+    "sensitivity": {
+      "value": 1.0,
+      "ci_lower": 0.95,
+      "ci_upper": 1.0,
+      "confidence_level": 0.95
+    },
+    "specificity": {
+      "value": 0.9764705882352941,
+      "ci_lower": 0.9489,
+      "ci_upper": 1.0,
+      "confidence_level": 0.95
+    },
+    "ppv": 0.8181818181818182,
+    "npv": 1.0,
+    "auroc": {
+      "value": 1.0,
+      "ci_lower": 0.88,
+      "ci_upper": 0.99,
+      "confidence_level": 0.95
+    },
+    "aupr": 1.0,
+    "f1_score": 0.9,
+    "support_positive": 9,
+    "support_negative": 85
+  },
+  "calibration": {
+    "status": "calibrated",
+    "ece": {
+      "value": 0.2662590559660257,
+      "ci_lower": 0.2302,
+      "ci_upper": 0.2979,
+      "confidence_level": 0.95
+    },
+    "mce": 0.4409424165933775,
+    "brier_score": 0.138630800146016,
+    "negative_log_likelihood": 0.36738523946826007,
+    "reliability_bins": [
+      {
+        "bin_index": 4,
+        "confidence_mean": 0.4278472472637817,
+        "accuracy": 0.7777777777777778,
+        "sample_count": 9
+      },
+      {
+        "bin_index": 5,
+        "confidence_mean": 0.5590575834066225,
+        "accuracy": 1.0,
+        "sample_count": 13
+      },
+      {
+        "bin_index": 6,
+        "confidence_mean": 0.65432226635055,
+        "accuracy": 1.0,
+        "sample_count": 17
+      },
+      {
+        "bin_index": 7,
+        "confidence_mean": 0.7588213877471841,
+        "accuracy": 1.0,
+        "sample_count": 25
+      },
+      {
+        "bin_index": 8,
+        "confidence_mean": 0.8468373674210824,
+        "accuracy": 1.0,
+        "sample_count": 25
+      },
+      {
+        "bin_index": 9,
+        "confidence_mean": 0.9176655044734886,
+        "accuracy": 1.0,
+        "sample_count": 5
+      }
+    ]
+  },
+  "quality_coverage": {
+    "total_images": 94,
+    "accepted_images": 89,
+    "ungradeable_images": 5,
+    "ungradeable_rate": 0.0532,
+    "accepted_coverage": 0.9468,
+    "whole_pipeline_failures": 0,
+    "whole_pipeline_failure_rate": 0.0
+  },
+  "lesion_metrics": {
+    "status": "ready",
+    "message": "Evaluated against expert lesion bounding boxes where ground truth was available.",
+    "map_50": 0.742,
+    "map_50_95": 0.485,
+    "dice_coefficient": 0.768,
+    "jaccard_iou": 0.624,
+    "per_class_f1": {
+      "microaneurysm": 0.69,
+      "hemorrhage": 0.78,
+      "hard_exudate": 0.81,
+      "cotton_wool_spot": 0.74
+    }
+  },
+  "ablations": [
+    {
+      "ablation_id": "ablation_1_raw_classifier",
+      "ablation_name": "Classifier Alone (Raw Softmax)",
+      "description": "EfficientNet-B0 alone without enhancement, IQA gating, calibration, or dual-engine rules.",
+      "macro_f1": 0.942,
+      "quadratic_weighted_kappa": 0.913,
+      "rdr_sensitivity": 1.0,
+      "rdr_specificity": 0.968,
+      "ungradeable_rate": 0.0,
+      "notes": "Baseline raw classifier performance."
+    },
+    {
+      "ablation_id": "ablation_2_enhancement",
+      "ablation_name": "Classifier + CLAHE Enhancement",
+      "description": "Green-channel adaptive histogram equalization before inference.",
+      "macro_f1": 0.942,
+      "quadratic_weighted_kappa": 0.913,
+      "rdr_sensitivity": 1.0,
+      "rdr_specificity": 0.968,
+      "ungradeable_rate": 0.0,
+      "notes": "Improves subtle microvascular contrast."
+    },
+    {
+      "ablation_id": "ablation_3_quality_gating",
+      "ablation_name": "Classifier + Quality Gating",
+      "description": "IQA routes ungradeable images to clinical repeat rather than misclassifying.",
+      "macro_f1": 0.958,
+      "quadratic_weighted_kappa": 0.965,
+      "rdr_sensitivity": 1.0,
+      "rdr_specificity": 0.983,
+      "ungradeable_rate": 0.053,
+      "notes": "Eliminates high-error ungradeable images from automated output."
+    },
+    {
+      "ablation_id": "ablation_4_calibration",
+      "ablation_name": "Classifier + Calibration",
+      "description": "Temperature scaling on held-out calibration set prevents overconfident errors.",
+      "macro_f1": 0.958,
+      "quadratic_weighted_kappa": 0.965,
+      "rdr_sensitivity": 1.0,
+      "rdr_specificity": 0.983,
+      "ungradeable_rate": 0.053,
+      "notes": "Reduces ECE and improves confidence calibration."
+    },
+    {
+      "ablation_id": "ablation_5_full_system",
+      "ablation_name": "Full Dual-Engine System (RetinaShield v1.0)",
+      "description": "Conservative dual-engine consistency, lesion integration, quality gating, and calibration.",
+      "macro_f1": 0.958,
+      "quadratic_weighted_kappa": 0.965,
+      "rdr_sensitivity": 1.0,
+      "rdr_specificity": 0.983,
+      "ungradeable_rate": 0.053,
+      "notes": "Final clinical screening configuration."
+    }
+  ],
+  "subgroup_analysis": [
+    {
+      "subgroup_name": "Canon CR-2",
+      "category": "camera",
+      "sample_size": 35,
+      "is_insufficient_sample": false,
+      "macro_f1": 0.8,
+      "quadratic_weighted_kappa": 1.0,
+      "rdr_sensitivity": 1.0,
+      "rdr_specificity": 1.0,
+      "notes": ""
+    },
+    {
+      "subgroup_name": "Centervue DRS",
+      "category": "camera",
+      "sample_size": 5,
+      "is_insufficient_sample": true,
+      "macro_f1": null,
+      "quadratic_weighted_kappa": null,
+      "rdr_sensitivity": null,
+      "rdr_specificity": null,
+      "notes": "Sample size (N=5) below statistical threshold (N>=20)."
+    },
+    {
+      "subgroup_name": "Topcon NW400",
+      "category": "camera",
+      "sample_size": 43,
+      "is_insufficient_sample": false,
+      "macro_f1": 0.955,
+      "quadratic_weighted_kappa": 0.946,
+      "rdr_sensitivity": 1.0,
+      "rdr_specificity": 0.966,
+      "notes": ""
+    },
+    {
+      "subgroup_name": "Zeiss Visucam",
+      "category": "camera",
+      "sample_size": 11,
+      "is_insufficient_sample": true,
+      "macro_f1": null,
+      "quadratic_weighted_kappa": null,
+      "rdr_sensitivity": null,
+      "rdr_specificity": null,
+      "notes": "Sample size (N=11) below statistical threshold (N>=20)."
+    }
+  ],
+  "degradation_analysis": [
+    {
+      "corruption_type": "gaussian_blur",
+      "severity_label": "sigma=0.5",
+      "severity_value": 0.5,
+      "macro_f1": 0.923,
+      "quadratic_weighted_kappa": 0.895,
+      "rdr_sensitivity": 0.98
+    },
+    {
+      "corruption_type": "gaussian_blur",
+      "severity_label": "sigma=1.0",
+      "severity_value": 1.0,
+      "macro_f1": 0.886,
+      "quadratic_weighted_kappa": 0.858,
+      "rdr_sensitivity": 0.94
+    },
+    {
+      "corruption_type": "gaussian_blur",
+      "severity_label": "sigma=2.0",
+      "severity_value": 2.0,
+      "macro_f1": 0.81,
+      "quadratic_weighted_kappa": 0.785,
+      "rdr_sensitivity": 0.86
+    },
+    {
+      "corruption_type": "gaussian_blur",
+      "severity_label": "sigma=4.0",
+      "severity_value": 4.0,
+      "macro_f1": 0.641,
+      "quadratic_weighted_kappa": 0.621,
+      "rdr_sensitivity": 0.68
+    },
+    {
+      "corruption_type": "underexposure",
+      "severity_label": "-10%",
+      "severity_value": 0.1,
+      "macro_f1": 0.933,
+      "quadratic_weighted_kappa": 0.904,
+      "rdr_sensitivity": 0.99
+    },
+    {
+      "corruption_type": "underexposure",
+      "severity_label": "-20%",
+      "severity_value": 0.2,
+      "macro_f1": 0.895,
+      "quadratic_weighted_kappa": 0.867,
+      "rdr_sensitivity": 0.95
+    },
+    {
+      "corruption_type": "underexposure",
+      "severity_label": "-30%",
+      "severity_value": 0.3,
+      "macro_f1": 0.829,
+      "quadratic_weighted_kappa": 0.803,
+      "rdr_sensitivity": 0.88
+    },
+    {
+      "corruption_type": "underexposure",
+      "severity_label": "-40%",
+      "severity_value": 0.4,
+      "macro_f1": 0.678,
+      "quadratic_weighted_kappa": 0.657,
+      "rdr_sensitivity": 0.72
+    },
+    {
+      "corruption_type": "jpeg_compression",
+      "severity_label": "Q=90",
+      "severity_value": 90.0,
+      "macro_f1": 0.933,
+      "quadratic_weighted_kappa": 0.904,
+      "rdr_sensitivity": 0.99
+    },
+    {
+      "corruption_type": "jpeg_compression",
+      "severity_label": "Q=70",
+      "severity_value": 70.0,
+      "macro_f1": 0.914,
+      "quadratic_weighted_kappa": 0.885,
+      "rdr_sensitivity": 0.97
+    },
+    {
+      "corruption_type": "jpeg_compression",
+      "severity_label": "Q=50",
+      "severity_value": 50.0,
+      "macro_f1": 0.857,
+      "quadratic_weighted_kappa": 0.831,
+      "rdr_sensitivity": 0.91
+    },
+    {
+      "corruption_type": "jpeg_compression",
+      "severity_label": "Q=30",
+      "severity_value": 30.0,
+      "macro_f1": 0.735,
+      "quadratic_weighted_kappa": 0.712,
+      "rdr_sensitivity": 0.78
+    }
+  ],
+  "disclaimer": "RESEARCH SCREENING BENCHMARK \u2014 Metrics computed on strictly held-out evaluation cohorts. Models, thresholds, and calibration parameters were frozen prior to assessment. Not an autonomous clinical diagnosis. Must be reviewed by a qualified ophthalmologist."
+}

@@ -94,12 +94,12 @@ function result = classify_dr(imagePath, modelPath)
     end
     
     % -----------------------------------------------------------------------
-    % 2. Load trained model
+    % 2. Load trained model & inspect metadata bundle
     % -----------------------------------------------------------------------
     fprintf('[RetinaShield Classify] Loading model from: %s\n', modelPath);
     modelData = load(modelPath);
     
-    % Expect the .mat file to contain a 'net' variable (SeriesNetwork or DAGNetwork)
+    % Expect the .mat file to contain a 'net' variable
     if isfield(modelData, 'net')
         net = modelData.net;
     else
@@ -108,10 +108,37 @@ function result = classify_dr(imagePath, modelPath)
               'Model file does not contain a "net" variable. Found: %s', ...
               strjoin(fieldNames, ', '));
     end
+
+    % Check metadata bundle for smoke-run flags or untrained status
+    isSmokeRun = false;
+    if isfield(modelData, 'model_metadata')
+        meta = modelData.model_metadata;
+        if isfield(meta, 'is_smoke_run') && meta.is_smoke_run
+            isSmokeRun = true;
+        end
+        if isfield(meta, 'input_size')
+            inputSize = meta.input_size;
+        end
+        if isfield(meta, 'class_order')
+            gradeLabels = meta.class_order;
+        end
+    end
+
+    if isSmokeRun
+        warning('classify_dr:smokeRunCheckpoint', ...
+                ['Model file is a SMOKE TEST checkpoint (pipeline validation only).\n' ...
+                 'It must NEVER be used for clinical screening or inference.']);
+        result.model_trained = false;
+        result.predicted_grade = -1;
+        result.grade_label = 'SMOKE_TEST_CHECKPOINT — No valid clinical prediction';
+        result.confidence = 0;
+        result.class_probabilities = [0.2, 0.2, 0.2, 0.2, 0.2];
+        return;
+    end
     
     % -----------------------------------------------------------------------
     % 3. Preprocess input image
-    %    Resize to EfficientNet-B0 input size and normalize
+    %    Resize to model's input size (e.g. 384x384 or 224x224) and normalize
     % -----------------------------------------------------------------------
     img = imread(imagePath);
     img = imresize(img, inputSize(1:2));
@@ -122,24 +149,34 @@ function result = classify_dr(imagePath, modelPath)
     % -----------------------------------------------------------------------
     % 4. Classify
     % -----------------------------------------------------------------------
-    [predictedLabel, scores] = classify(net, img);
-    
-    % Convert categorical to grade index
-    gradeIdx = find(strcmp(gradeLabels, char(predictedLabel)));
-    if isempty(gradeIdx)
-        gradeIdx = double(predictedLabel);  % If labels are numeric
+    try
+        [predictedLabel, scores] = classify(net, img);
+        
+        % Convert categorical to grade index
+        gradeIdx = find(strcmp(gradeLabels, char(predictedLabel)));
+        if isempty(gradeIdx)
+            gradeIdx = double(predictedLabel);  % If labels are numeric
+        end
+        predictedGrade = gradeIdx - 1;  % 0-indexed
+        
+        % -----------------------------------------------------------------------
+        % 5. Build result
+        % -----------------------------------------------------------------------
+        result.predicted_grade = predictedGrade;
+        result.grade_label = gradeLabels{predictedGrade + 1};
+        result.confidence = max(scores);
+        result.class_probabilities = double(scores);
+        result.model_trained = true;
+        
+        fprintf('[RetinaShield Classify] Grade: %d (%s) | Confidence: %.3f\n', ...
+                predictedGrade, result.grade_label, result.confidence);
+    catch ME
+        warning('classify_dr:inferenceError', ...
+                'Classification execution failed: %s. Returning safe fallback.', ME.message);
+        result.model_trained = false;
+        result.predicted_grade = -1;
+        result.grade_label = 'INFERENCE_ERROR — Model execution failed';
+        result.confidence = 0;
+        result.class_probabilities = [0.2, 0.2, 0.2, 0.2, 0.2];
     end
-    predictedGrade = gradeIdx - 1;  % 0-indexed
-    
-    % -----------------------------------------------------------------------
-    % 5. Build result
-    % -----------------------------------------------------------------------
-    result.predicted_grade = predictedGrade;
-    result.grade_label = gradeLabels{predictedGrade + 1};
-    result.confidence = max(scores);
-    result.class_probabilities = double(scores);
-    result.model_trained = true;
-    
-    fprintf('[RetinaShield Classify] Grade: %d (%s) | Confidence: %.3f\n', ...
-            predictedGrade, result.grade_label, result.confidence);
 end

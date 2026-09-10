@@ -5,14 +5,20 @@ Represents a healthcare facility (Primary Health Centre) that can perform
 screenings, potentially in offline mode.
 """
 
+from __future__ import annotations
+
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import String, DateTime, Boolean, Float, Text, func
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
+from app.db.types import GUID
+
+if TYPE_CHECKING:
+    from app.models.user import User
 
 
 class Facility(Base):
@@ -21,12 +27,12 @@ class Facility(Base):
     __tablename__ = "facilities"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+        GUID(), primary_key=True, default=uuid.uuid4
     )
 
     # Facility identification
     facility_code: Mapped[str] = mapped_column(
-        String(100), unique=True, nullable=False,
+        String(100), unique=True, index=True, nullable=False,
         comment="Unique facility code (e.g., PHC-MH-PUNE-001)"
     )
     name: Mapped[str] = mapped_column(String(300), nullable=False)
@@ -76,6 +82,9 @@ class Facility(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
+
+    # Relationships
+    staff_members: Mapped[list[User]] = relationship("User", back_populates="facility")
 
     def __repr__(self) -> str:
         return f"<Facility {self.facility_code} '{self.name}'>"

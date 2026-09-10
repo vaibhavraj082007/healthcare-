@@ -57,6 +57,8 @@ class PatientRead(PatientBase):
     """Schema for reading a patient record."""
 
     id: uuid.UUID
+    is_deleted: bool = False
+    deleted_at: datetime | None = None
     created_at: datetime
     updated_at: datetime
     screening_count: int = 0

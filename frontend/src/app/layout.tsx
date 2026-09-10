@@ -83,6 +83,9 @@ export default function RootLayout({
             <a href="/sync" className="nav-link">
               Sync
             </a>
+            <a href="/monitoring" className="nav-link">
+              Monitoring
+            </a>
             <a href="/settings" className="nav-link">
               Settings
             </a>

@@ -20,6 +20,7 @@ class ScreeningCreate(BaseModel):
 
     patient_id: uuid.UUID
     facility_id: str | None = None
+    screener_id: uuid.UUID | None = None
     screener_name: str | None = None
     eye: Literal["left", "right", "both"] = "both"
 
@@ -30,9 +31,11 @@ class ScreeningRead(BaseModel):
     id: uuid.UUID
     patient_id: uuid.UUID
     facility_id: str | None = None
+    screener_id: uuid.UUID | None = None
     screener_name: str | None = None
     eye: str
     status: str
+    is_deleted: bool = False
     quality_verdict: str | None = None
     dr_grade: int | None = None
     dr_grade_label: str | None = None

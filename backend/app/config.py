@@ -28,10 +28,12 @@ class Settings(BaseSettings):
     debug: bool = True
     log_level: str = "INFO"
 
-    # --- FastAPI ---
+    # --- FastAPI & Security ---
     backend_host: str = "0.0.0.0"
     backend_port: int = 8000
-    secret_key: str = "CHANGE_ME_generate_a_real_secret_key"
+    secret_key: str = "retinashield_super_secure_secret_key_minimum_32_bytes_long_2026"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 480  # 8 hours clinical work shift
     allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
 
     @property
@@ -43,9 +45,11 @@ class Settings(BaseSettings):
         "postgresql+asyncpg://retinashield:devpassword@localhost:5432/retinashield"
     )
 
-    # --- Image Storage ---
+    # --- Image Storage & Validation ---
     image_storage_path: str = "./data/images"
     max_upload_size_mb: int = 50
+    min_upload_dim_px: int = 512
+    max_upload_dim_px: int = 8192
 
     @property
     def max_upload_size_bytes(self) -> int:
@@ -54,6 +58,17 @@ class Settings(BaseSettings):
     @property
     def image_storage_dir(self) -> Path:
         p = Path(self.image_storage_path)
+        p.mkdir(parents=True, exist_ok=True)
+        return p
+
+    # --- Retention & Backups ---
+    retention_statutory_years: int = 7
+    audit_log_retention_days: int = 2555
+    backup_storage_path: str = "./data/backups"
+
+    @property
+    def backup_storage_dir(self) -> Path:
+        p = Path(self.backup_storage_path)
         p.mkdir(parents=True, exist_ok=True)
         return p
 
@@ -83,6 +98,22 @@ class Settings(BaseSettings):
     # --- Security ---
     image_encryption_key: str = ""
     encrypt_images: bool = False
+
+    # --- Operational Monitoring & Privacy ---
+    monitoring_small_cell_threshold: int = 5  # Counts < 5 are suppressed to prevent patient re-identification
+    monitoring_baseline_window_days: int = 30
+    monitoring_current_window_days: int = 7
+
+    # --- ABDM & Interoperability Adapter ---
+    # Safe default: live exchange and ABHA linking are strictly DISABLED until authorized
+    # sandbox access, consent flows, and verified implementation requirements are available.
+    abdm_exchange_enabled: bool = False
+    abha_linking_enabled: bool = False
+    abdm_environment: Literal["disabled", "sandbox", "production"] = "disabled"
+    abdm_gateway_url: str = "https://dev.abdm.gov.in/gateway"
+    abdm_client_id: str = ""
+    abdm_client_secret: str = ""
+    abdm_hip_id: str = "IN-MH-PHC-001"  # Health Information Provider ID
 
 
 # Singleton instance

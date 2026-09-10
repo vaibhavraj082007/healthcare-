@@ -1,11 +1,18 @@
 import os
 import sys
-import pytest
 import zipfile
-import pandas as pd
 from pathlib import Path
 from PIL import Image
 import numpy as np
+
+try:
+    import pytest
+    import pandas as pd
+    PYTEST_AVAILABLE = True
+except ImportError:
+    PYTEST_AVAILABLE = False
+    import unittest
+    raise unittest.SkipTest("pytest and pandas required for test_dataset_pipeline")
 
 # Add scripts directory to path to import the module
 scripts_dir = Path(__file__).resolve().parent.parent.parent / "scripts"

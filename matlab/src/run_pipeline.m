@@ -122,48 +122,83 @@ function result = run_pipeline(imagePath, outputDir, modelPath)
     catch ME
         warning('run_pipeline:segmentFailed', 'Structure analysis failed: %s', ME.message);
         result.structure_analysis = struct(...
-            'optic_disc', struct('detected', false), ...
-            'macula', struct('detected', false), ...
+            'field_of_view', struct('mask_path', '', 'is_reliable', false, 'failure_reason', ME.message), ...
+            'optic_disc', struct('detected', false, 'confidence', 0.0, 'is_reliable', false, 'failure_reason', ME.message), ...
+            'macula', struct('detected', false, 'confidence', 0.0, 'is_reliable', false, 'failure_reason', ME.message), ...
+            'fovea', struct('detected', false, 'confidence', 0.0, 'is_reliable', false, 'failure_reason', ME.message), ...
             'vasculature', struct('segmentation_mask_path', '', ...
-                'vessel_density', 0, 'tortuosity_index', 0));
+                'vessel_density', 0, 'tortuosity_index', 0, 'is_reliable', false, 'failure_reason', ME.message), ...
+            'is_experimental', true);
     end
     fprintf('\n');
 
     % ===================================================================
-    % Stage 4: DR Severity Classification
+    % Stage 4: DR Severity Classification & Confidence Calibration
     % ===================================================================
-    fprintf('[4/5] DR Severity Classification (EfficientNet-B0)...\n');
+    fprintf('[4/6] DR Severity Classification & Confidence Calibration...\n');
     try
         result.severity_classification = classify_dr(imagePath, modelPath);
+        rawProbs = result.severity_classification.class_probabilities;
+        result.confidence_calibration = calibrate_probabilities(rawProbs);
     catch ME
         warning('run_pipeline:classifyFailed', 'Classification failed: %s', ME.message);
         result.severity_classification = struct('model', 'EfficientNet-B0', ...
             'model_trained', false, 'predicted_grade', -1, ...
             'grade_label', 'Classification failed', 'confidence', 0, ...
             'class_probabilities', [0.2, 0.2, 0.2, 0.2, 0.2]);
+        result.confidence_calibration = struct('status', 'fallback_uniform', ...
+            'temperature', NaN, 'calibrated_probabilities', [0.2, 0.2, 0.2, 0.2, 0.2], ...
+            'max_calibrated_probability', 0.2, 'confidence_margin', 0.0, ...
+            'shannon_entropy', 1.0, 'is_uncertain', true);
     end
     fprintf('\n');
 
     % ===================================================================
-    % Stage 5: Grad-CAM Explainability
+    % Stage 5: Lesion Candidate Detection Baseline
     % ===================================================================
-    fprintf('[5/5] Grad-CAM Explainability Heatmap...\n');
+    fprintf('[5/6] Lesion Candidate Detection Baseline...\n');
+    try
+        lesionRes = detect_lesion_candidates(imagePath);
+        result.lesion_detection = struct(...
+            'model', 'MATLAB-Morphology-Candidates-v1.0', ...
+            'status', 'heuristic_only', ...
+            'message', 'Morphological candidate proposals (unvalidated heuristic baseline)', ...
+            'detections', lesionRes.candidates, ...
+            'model_estimated_count', lesionRes.model_estimated_count, ...
+            'model_trained', false);
+    catch ME
+        warning('run_pipeline:lesionsFailed', 'Lesion detection failed: %s', ME.message);
+        result.lesion_detection = struct('model', 'MATLAB-Morphology', ...
+            'status', 'unavailable', 'message', ME.message, ...
+            'detections', [], 'model_estimated_count', struct(), 'model_trained', false);
+    end
+    fprintf('\n');
+
+    % ===================================================================
+    % Stage 6: Grad-CAM Explainability Heatmap
+    % ===================================================================
+    fprintf('[6/6] Grad-CAM Explainability Heatmap...\n');
     gradcamDir = fullfile(outputDir, 'gradcam');
     try
         gradcamResult = generate_gradcam(imagePath, modelPath, gradcamDir);
-        if isfield(result.severity_classification, 'gradcam_heatmap_path') || true
-            result.severity_classification.gradcam_heatmap_path = gradcamResult.gradcam_heatmap_path;
-        end
+        result.gradcam_explanation = gradcamResult;
+        result.severity_classification.gradcam_heatmap_path = gradcamResult.gradcam_heatmap_path;
     catch ME
         warning('run_pipeline:gradcamFailed', 'Grad-CAM failed: %s', ME.message);
+        result.gradcam_explanation = struct('status', 'error', 'reason', ME.message, ...
+            'gradcam_heatmap_path', '', 'gradcam_overlay_path', '', 'gradcam_raw_path', '', ...
+            'target_layer', '', 'target_class', '', 'predicted_class', '', ...
+            'preprocessing_transform', struct(), 'algorithm_version', '1.0.0-gradcam', ...
+            'disclaimer', 'Grad-CAM shows model-influential regions, not confirmed lesions or proof that a prediction is correct.', ...
+            'pointing_game_hit', [], 'expert_iou', [], 'energy_pointing_game', []);
         result.severity_classification.gradcam_heatmap_path = '';
     end
     fprintf('\n');
 
     % ===================================================================
-    % Referral Recommendation (rule-based)
+    % Conservative Dual-Engine Consistency Evaluation & Referral Suggestion
     % ===================================================================
-    result.referral_recommendation = compute_referral(result);
+    [result.consistency_analysis, result.referral_recommendation] = evaluate_consistency(result);
 
     % Processing time
     result.processing_time_seconds = toc(startTime);
@@ -179,62 +214,9 @@ function result = run_pipeline(imagePath, outputDir, modelPath)
 
     fprintf('==========================================================\n');
     fprintf(' Pipeline complete in %.2f seconds\n', result.processing_time_seconds);
+    fprintf(' Consistency Finding: %s\n', result.consistency_analysis.finding_label);
+    fprintf(' Referral Urgency:    %s\n', result.referral_recommendation.urgency);
     fprintf(' Result saved to: %s\n', resultPath);
     fprintf(' RESEARCH SCREENING — NOT a clinical diagnosis\n');
     fprintf('==========================================================\n');
-end
-
-
-function referral = compute_referral(result)
-% COMPUTE_REFERRAL Derive referral recommendation from analysis results.
-%   Rule-based logic per International Clinical DR Severity Scale.
-
-    referral = struct('urgency', 'none', 'reason', '', 'suggested_followup_weeks', 52);
-
-    if ~isfield(result, 'severity_classification') || ...
-       ~result.severity_classification.model_trained
-        referral.urgency = 'none';
-        referral.reason = 'Model not trained — no referral recommendation possible. Clinical evaluation required.';
-        referral.suggested_followup_weeks = 0;
-        return;
-    end
-
-    grade = result.severity_classification.predicted_grade;
-
-    switch grade
-        case 0
-            referral.urgency = 'none';
-            referral.reason = 'No apparent diabetic retinopathy detected. Routine annual screening recommended.';
-            referral.suggested_followup_weeks = 52;
-        case 1
-            referral.urgency = 'routine';
-            referral.reason = 'Mild NPDR detected. Referral for ophthalmological evaluation within 6 months.';
-            referral.suggested_followup_weeks = 26;
-        case 2
-            referral.urgency = 'priority';
-            referral.reason = 'Moderate NPDR detected. Priority referral for ophthalmological evaluation within 3 months.';
-            referral.suggested_followup_weeks = 13;
-        case 3
-            referral.urgency = 'priority';
-            referral.reason = 'Severe NPDR detected. Urgent referral to retina specialist within 2-4 weeks.';
-            referral.suggested_followup_weeks = 4;
-        case 4
-            referral.urgency = 'urgent';
-            referral.reason = 'Proliferative DR detected. URGENT referral to retina specialist within 1 week.';
-            referral.suggested_followup_weeks = 1;
-        otherwise
-            referral.urgency = 'none';
-            referral.reason = 'Classification result invalid. Clinical evaluation required.';
-            referral.suggested_followup_weeks = 0;
-    end
-
-    % Escalate if macula involved (simplified check)
-    if isfield(result, 'structure_analysis') && isfield(result.structure_analysis, 'macula')
-        if result.structure_analysis.macula.detected && grade >= 2
-            referral.reason = [referral.reason ' Macular involvement suspected — consider OCT evaluation.'];
-            if strcmp(referral.urgency, 'priority')
-                referral.urgency = 'urgent';
-            end
-        end
-    end
 end

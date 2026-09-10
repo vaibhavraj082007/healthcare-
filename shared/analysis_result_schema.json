@@ -92,16 +92,40 @@
     },
     "structure_analysis": {
       "type": "object",
-      "description": "Retinal structure segmentation from MATLAB",
+      "description": "Retinal structure segmentation and localization from MATLAB",
       "properties": {
+        "is_experimental": {
+          "type": "boolean",
+          "default": true,
+          "description": "Labelled experimental until validated against expert ground truth"
+        },
+        "field_of_view": {
+          "type": "object",
+          "properties": {
+            "mask_path": { "type": "string" },
+            "bounding_box": { "type": "array", "items": { "type": "number" } },
+            "center_x": { "type": "number" },
+            "center_y": { "type": "number" },
+            "radius": { "type": "number" },
+            "area_pixels": { "type": "number" },
+            "area_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+            "is_reliable": { "type": "boolean" },
+            "failure_reason": { "type": "string" },
+            "algorithm_version": { "type": "string" }
+          }
+        },
         "optic_disc": {
           "type": "object",
           "properties": {
             "detected": { "type": "boolean" },
-            "center_x": { "type": "number" },
-            "center_y": { "type": "number" },
-            "radius": { "type": "number" },
-            "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            "center_x": { "type": ["number", "null"] },
+            "center_y": { "type": ["number", "null"] },
+            "radius": { "type": ["number", "null"] },
+            "mask_path": { "type": "string" },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "is_reliable": { "type": "boolean" },
+            "failure_reason": { "type": "string" },
+            "algorithm_version": { "type": "string" }
           },
           "required": ["detected"]
         },
@@ -109,11 +133,30 @@
           "type": "object",
           "properties": {
             "detected": { "type": "boolean" },
-            "center_x": { "type": "number" },
-            "center_y": { "type": "number" },
-            "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            "center_x": { "type": ["number", "null"] },
+            "center_y": { "type": ["number", "null"] },
+            "radius": { "type": ["number", "null"] },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "is_reliable": { "type": "boolean" },
+            "failure_reason": { "type": "string" },
+            "inferred_laterality": { "type": "string", "enum": ["OD", "OS", "unknown"] },
+            "algorithm_version": { "type": "string" }
           },
           "required": ["detected"]
+        },
+        "fovea": {
+          "type": "object",
+          "properties": {
+            "detected": { "type": "boolean" },
+            "center_x": { "type": ["number", "null"] },
+            "center_y": { "type": ["number", "null"] },
+            "radius": { "type": ["number", "null"] },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "is_reliable": { "type": "boolean" },
+            "failure_reason": { "type": "string" },
+            "inferred_laterality": { "type": "string", "enum": ["OD", "OS", "unknown"] },
+            "algorithm_version": { "type": "string" }
+          }
         },
         "vasculature": {
           "type": "object",
@@ -128,7 +171,12 @@
             "tortuosity_index": {
               "type": "number",
               "description": "Mean vessel tortuosity (arc-chord ratio)"
-            }
+            },
+            "caliber_proxy": { "type": "number" },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "is_reliable": { "type": "boolean" },
+            "failure_reason": { "type": "string" },
+            "algorithm_version": { "type": "string" }
           }
         }
       }
@@ -175,9 +223,19 @@
     },
     "lesion_detection": {
       "type": "object",
-      "description": "YOLOv8-based lesion detection (Python service, not MATLAB)",
+      "description": "YOLOv8-based lesion detection with tiling adapter and candidate tracking",
       "properties": {
         "model": { "type": "string", "default": "YOLOv8" },
+        "status": {
+          "type": "string",
+          "enum": ["ready", "unavailable", "heuristic_only"],
+          "default": "unavailable"
+        },
+        "message": { "type": "string" },
+        "model_estimated_count": {
+          "type": "object",
+          "description": "Estimated count of lesions per type"
+        },
         "detections": {
           "type": "array",
           "items": {
@@ -185,7 +243,7 @@
             "properties": {
               "lesion_type": {
                 "type": "string",
-                "enum": ["microaneurysm", "hemorrhage", "hard_exudate", "soft_exudate", "neovascularization"]
+                "enum": ["microaneurysm", "hemorrhage", "hard_exudate", "soft_exudate", "neovascularization", "cotton_wool_spot"]
               },
               "bbox": {
                 "type": "object",
@@ -197,7 +255,17 @@
                 },
                 "required": ["x_min", "y_min", "x_max", "y_max"]
               },
-              "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "approximate_extent": {
+                "type": "object",
+                "properties": {
+                  "area_pixels": { "type": "number" },
+                  "equivalent_diameter": { "type": "number" },
+                  "width": { "type": "number" },
+                  "height": { "type": "number" }
+                }
+              },
+              "is_heuristic_candidate": { "type": "boolean", "default": false }
             },
             "required": ["lesion_type", "bbox", "confidence"]
           }
@@ -209,6 +277,133 @@
         }
       },
       "required": ["model", "model_trained"]
+    },
+    "gradcam_explanation": {
+      "type": "object",
+      "description": "Grad-CAM explainability heatmap from actual model activations",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["available", "unavailable", "error"]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "gradcam_heatmap_path": {
+          "type": ["string", "null"]
+        },
+        "gradcam_overlay_path": {
+          "type": ["string", "null"]
+        },
+        "gradcam_raw_path": {
+          "type": ["string", "null"]
+        },
+        "target_layer": {
+          "type": ["string", "null"]
+        },
+        "target_class": {
+          "type": ["string", "null"]
+        },
+        "predicted_class": {
+          "type": ["string", "null"]
+        },
+        "preprocessing_transform": {
+          "type": ["object", "null"]
+        },
+        "algorithm_version": {
+          "type": "string"
+        },
+        "disclaimer": {
+          "type": "string"
+        },
+        "pointing_game_hit": {
+          "type": ["boolean", "null"]
+        },
+        "expert_iou": {
+          "type": ["number", "null"]
+        },
+        "energy_pointing_game": {
+          "type": ["number", "null"]
+        }
+      },
+      "required": ["status", "algorithm_version", "disclaimer"]
+    },
+    "confidence_calibration": {
+      "type": "object",
+      "description": "Post-hoc confidence calibration parameters and predictive uncertainty metrics",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["calibrated", "uncalibrated_raw_softmax", "fallback_uniform"],
+          "description": "Calibration status"
+        },
+        "temperature": {
+          "type": ["number", "null"],
+          "description": "Temperature scaling factor T optimized on designated calibration data"
+        },
+        "max_calibrated_probability": {
+          "type": ["number", "null"],
+          "description": "Maximum calibrated probability for top class"
+        },
+        "confidence_margin": {
+          "type": ["number", "null"],
+          "description": "Margin between top 1 and top 2 class probabilities"
+        },
+        "shannon_entropy": {
+          "type": ["number", "null"],
+          "description": "Normalized Shannon entropy in [0, 1] representing predictive uncertainty"
+        },
+        "is_uncertain": {
+          "type": "boolean",
+          "description": "True if confidence is below threshold or entropy is high"
+        }
+      },
+      "required": ["status", "is_uncertain"]
+    },
+    "consistency_analysis": {
+      "type": "object",
+      "description": "Conservative dual-engine consistency evaluation between DR classifier, lesions, and IQA",
+      "properties": {
+        "consistency_status": {
+          "type": "string",
+          "enum": [
+            "concordant",
+            "discordant_classifier_high",
+            "discordant_lesions_high",
+            "uncertain_prediction",
+            "quality_compromised",
+            "component_unavailable"
+          ],
+          "description": "Overall consistency verdict between classification and lesion findings"
+        },
+        "finding_label": {
+          "type": "string",
+          "description": "Clinical finding label (e.g. 'Concordant AI findings', strictly never 'Confirmed diagnosis')"
+        },
+        "human_review_required": {
+          "type": "boolean",
+          "description": "Whether this case requires mandatory human review"
+        },
+        "review_reasons": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of explicit clinical triggers for review"
+        },
+        "recommended_grade": {
+          "type": ["integer", "null"],
+          "description": "Safest conservative recommended grade"
+        },
+        "recommended_urgency": {
+          "type": "string",
+          "enum": ["none", "routine", "priority", "urgent"],
+          "description": "Conservative referral urgency"
+        },
+        "rules_version": {
+          "type": "string",
+          "description": "Version identifier of the consistency rules"
+        }
+      },
+      "required": ["consistency_status", "finding_label", "human_review_required", "review_reasons", "rules_version"]
     },
     "referral_recommendation": {
       "type": "object",

@@ -121,9 +121,13 @@ classdef test_pipeline < matlab.unittest.TestCase
         function testSegmentStructuresReturnsComplete(testCase)
             segDir = fullfile(testCase.OutputDir, 'segment_test');
             result = segment_structures(testCase.TestImagePath, segDir);
+            testCase.verifyTrue(isfield(result, 'field_of_view'));
             testCase.verifyTrue(isfield(result, 'optic_disc'));
             testCase.verifyTrue(isfield(result, 'macula'));
+            testCase.verifyTrue(isfield(result, 'fovea'));
             testCase.verifyTrue(isfield(result, 'vasculature'));
+            testCase.verifyTrue(isfield(result, 'is_experimental'));
+            testCase.verifyTrue(result.is_experimental);
             testCase.verifyTrue(isfield(result.optic_disc, 'detected'));
             testCase.verifyTrue(isfield(result.macula, 'detected'));
         end

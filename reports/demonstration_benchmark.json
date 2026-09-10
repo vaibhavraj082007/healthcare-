@@ -1,0 +1,42 @@
+{
+  "host_hardware": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "processor": "arm",
+    "python_version": "3.14.6",
+    "logical_cores": 10,
+    "timestamp": "2026-09-10T06:34:17.315394+00:00"
+  },
+  "performance_profile": {
+    "image_quality_and_segmentation_ms": 258.97,
+    "deterministic_report_generation_ms": 0.08,
+    "unicode_pdf_rendering_ms": 12.08,
+    "voice_synthesis_and_fallback_ms": 3528.78,
+    "end_to_end_screening_ms": 3833.65,
+    "peak_rss_memory_mb": 155.16
+  },
+  "genuine_model_outputs": {
+    "screening_id": "adc4a1de-108c-4585-81c5-958e5bb6de0c",
+    "image_sha256": "a79baf3c78a8e703ea73472da6cd078095d9002e713fd0aa11624abb6ed3edcf",
+    "overall_quality_score": "poor",
+    "is_gradable": false,
+    "sharpness": 0.0,
+    "illumination_uniformity": 1.0,
+    "field_of_view_adequate": true,
+    "provisional_dr_stage": 0,
+    "confidence": 0.0,
+    "adapter_type": "unavailable",
+    "model_provenance_hash": "none"
+  },
+  "synthetic_fixture_boundary": {
+    "is_synthetic_fixture": false,
+    "isolation_note": "Image processed via genuine image evaluation and pipeline; benchmark fixtures isolated from evaluation suite."
+  },
+  "regulatory_disclaimer": "RetinaShield is an investigational software prototype designed for research and operational evaluation. It is NOT registered or approved as a medical device under CDSCO Medical Device Rules 2017. It is NOT cleared for autonomous clinical diagnosis or treatment planning.",
+  "generated_artifacts": [
+    "reports/demo_artifacts/technical_report_provisional.pdf",
+    "reports/demo_artifacts/patient_summary_en_provisional.pdf",
+    "reports/demo_artifacts/patient_summary_hi_provisional.pdf",
+    "reports/demo_artifacts/technical_report_signed.pdf"
+  ]
+}

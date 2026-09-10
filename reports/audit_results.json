@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-09-10T06:19:54.899096+00:00",
+  "hardware": {
+    "platform": "darwin",
+    "python_version": "3.14.6"
+  },
+  "tests": {
+    "dataset_leakage_protection": {
+      "passed": true,
+      "train_patients": 30,
+      "val_patients": 10,
+      "test_patients": 10,
+      "leakage_count": 0,
+      "duration_sec": 0.0
+    },
+    "quality_rejection_recapture": {
+      "passed": true,
+      "consistency_status": "quality_compromised",
+      "human_review_required": true,
+      "duration_sec": 0.0
+    },
+    "model_provenance": {
+      "passed": true,
+      "pipeline_version": "0.1.0-dev",
+      "matlab_mode": "fallback",
+      "duration_sec": 0.0
+    },
+    "missing_model_handling": {
+      "passed": true,
+      "status": "component_unavailable",
+      "review_reasons": [
+        "DR Severity Classifier is untrained / missing weights",
+        "Lesion detector is unavailable / missing weights",
+        "High predictive uncertainty (normalized entropy: None, margin: None)"
+      ],
+      "duration_sec": 0.0
+    },
+    "disagreement_escalation": {
+      "passed": true,
+      "recommended_grade": 2,
+      "referral_urgency": "priority",
+      "duration_sec": 0.0
+    },
+    "rbac_authorization": {
+      "passed": true,
+      "duration_sec": 0.0001
+    },
+    "pdf_generation": {
+      "passed": true,
+      "pdf_size_bytes": 3922,
+      "peak_memory_mb": 0.67,
+      "duration_sec": 0.0226
+    },
+    "voice_fallback": {
+      "passed": true,
+      "en_voices_count": 56,
+      "hi_voices_count": 17,
+      "fallback_status": "Audio playback declined or consent not provided. Displaying text.",
+      "duration_sec": 0.3835
+    },
+    "offline_sync_and_interop": {
+      "passed": true,
+      "fhir_version": "4.0.1",
+      "live_exchange_blocked": true,
+      "duration_sec": 0.0001
+    },
+    "submission_csv_format": {
+      "passed": true,
+      "header": "image_id,dr_grade,confidence,risk_level",
+      "rows_count": 4,
+      "duration_sec": 0.0001
+    }
+  },
+  "benchmarks": {},
+  "all_passed": true
+}
