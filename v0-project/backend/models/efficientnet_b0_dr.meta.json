@@ -1,0 +1,12 @@
+{
+  "trained_on": "APTOS 2019 Blindness Detection",
+  "architecture": "efficientnet_b0",
+  "input_size": 380,
+  "best_epoch": 10,
+  "validation_qwk": 0.8946,
+  "validation_metric_definition": "Quadratic Weighted Kappa (QWK) on the stratified 15% validation split",
+  "confidence_definition": "Softmax probability of the predicted ICDR grade",
+  "samples": 3051,
+  "training_date": "2026-09-11",
+  "git_commit": "94203ab"
+}

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" role="img" aria-label="Illustration of an eye-care consultation in a rural Indian setting">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8F4F0"/>
+      <stop offset="100%" stop-color="#D4EDE6"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5EFE6"/>
+      <stop offset="100%" stop-color="#EDE5D8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <rect y="340" width="800" height="160" fill="url(#floor)"/>
+  <line x1="0" y1="340" x2="800" y2="340" stroke="#C4B8A8" stroke-width="1" opacity="0.5"/>
+  <rect x="50" y="60" width="160" height="200" rx="80" fill="#B8D8CC" opacity="0.6"/>
+  <rect x="70" y="80" width="120" height="160" rx="60" fill="#D4EDE6" opacity="0.8"/>
+  <circle cx="90" cy="100" r="30" fill="#4A8C7A" opacity="0.5"/>
+  <circle cx="130" cy="90" r="25" fill="#5A9C8A" opacity="0.4"/>
+  <rect x="88" y="120" width="4" height="20" fill="#8B7355" opacity="0.4"/>
+  <rect x="320" y="300" width="360" height="12" rx="3" fill="#A89078"/>
+  <rect x="330" y="312" width="8" height="60" fill="#9A8268"/>
+  <rect x="662" y="312" width="8" height="60" fill="#9A8268"/>
+  <rect x="580" y="210" width="60" height="90" rx="8" fill="#FFFFFF"/>
+  <line x1="610" y1="210" x2="610" y2="300" stroke="#E0E0E0" stroke-width="1"/>
+  <circle cx="610" cy="190" r="20" fill="#D4A574"/>
+  <path d="M590 185 Q610 170 630 185" fill="#3D2B1F"/>
+  <path d="M600 215 Q595 230 605 240" stroke="#4A8C7A" stroke-width="2" fill="none"/>
+  <rect x="380" y="220" width="55" height="80" rx="6" fill="#C75050"/>
+  <path d="M380 220 Q360 260 375 300" stroke="#B84040" stroke-width="3" fill="none"/>
+  <circle cx="407" cy="200" r="18" fill="#C68642"/>
+  <path d="M389 196 Q407 182 425 196" fill="#1A1A1A"/>
+  <circle cx="407" cy="193" r="2" fill="#CC3333"/>
+  <rect x="340" y="270" width="30" height="30" rx="4" fill="#E8A849"/>
+  <circle cx="355" cy="260" r="12" fill="#C68642"/>
+  <path d="M343 256 Q355 246 367 256" fill="#1A1A1A"/>
+  <rect x="650" y="80" width="100" height="140" rx="4" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="1"/>
+  <text x="700" y="105" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">E</text>
+  <text x="700" y="125" text-anchor="middle" font-size="11" fill="#333">F P</text>
+  <text x="700" y="142" text-anchor="middle" font-size="9" fill="#333">T O Z</text>
+  <text x="700" y="157" text-anchor="middle" font-size="7" fill="#555">L P E D</text>
+  <text x="700" y="170" text-anchor="middle" font-size="6" fill="#555">P E C F D</text>
+  <text x="700" y="182" text-anchor="middle" font-size="5" fill="#777">E D F C Z P</text>
+  <text x="700" y="210" text-anchor="middle" font-size="5" fill="#999">20/20</text>
+  <rect x="450" y="285" width="40" height="15" rx="3" fill="#4A8C7A"/>
+  <rect x="460" y="275" width="20" height="12" rx="2" fill="#3D7A6A"/>
+  <circle cx="470" cy="280" r="4" fill="#88C8B8"/>
+  <rect x="680" y="280" width="12" height="20" rx="3" fill="#C49A6C"/>
+  <circle cx="686" cy="275" r="10" fill="#5A9C6A"/>
+  <circle cx="680" cy="270" r="7" fill="#4A8C5A"/>
+  <circle cx="40" cy="460" r="20" fill="#4A8C7A" opacity="0.8"/>
+  <ellipse cx="40" cy="460" rx="10" ry="6" stroke="white" stroke-width="1.2" fill="none"/>
+  <circle cx="40" cy="460" r="2.5" fill="white"/>
+</svg>

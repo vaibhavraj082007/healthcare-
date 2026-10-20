@@ -1,0 +1,88 @@
+[
+  {
+    "file": "grade0_002c21358ce6.png",
+    "id_code": "002c21358ce6",
+    "diagnosis": 0,
+    "quality_status": "acceptable",
+    "quality_score": 41.11
+  },
+  {
+    "file": "grade0_00cc2b75cddd.png",
+    "id_code": "00cc2b75cddd",
+    "diagnosis": 0,
+    "quality_status": "acceptable",
+    "quality_score": 35.15
+  },
+  {
+    "file": "grade1_0024cdab0c1e.png",
+    "id_code": "0024cdab0c1e",
+    "diagnosis": 1,
+    "quality_status": "acceptable",
+    "quality_score": 30.94
+  },
+  {
+    "file": "grade1_00cb6555d108.png",
+    "id_code": "00cb6555d108",
+    "diagnosis": 1,
+    "quality_status": "acceptable",
+    "quality_score": 27.03
+  },
+  {
+    "file": "grade2_000c1434d8d7.png",
+    "id_code": "000c1434d8d7",
+    "diagnosis": 2,
+    "quality_status": "acceptable",
+    "quality_score": 31.87
+  },
+  {
+    "file": "grade2_00a8624548a9.png",
+    "id_code": "00a8624548a9",
+    "diagnosis": 2,
+    "quality_status": "acceptable",
+    "quality_score": 35.11
+  },
+  {
+    "file": "grade3_0104b032c141.png",
+    "id_code": "0104b032c141",
+    "diagnosis": 3,
+    "quality_status": "acceptable",
+    "quality_score": 41.92
+  },
+  {
+    "file": "grade3_03c85870824c.png",
+    "id_code": "03c85870824c",
+    "diagnosis": 3,
+    "quality_status": "acceptable",
+    "quality_score": 35.62
+  },
+  {
+    "file": "grade4_001639a390f0.png",
+    "id_code": "001639a390f0",
+    "diagnosis": 4,
+    "quality_status": "acceptable",
+    "quality_score": 24.78
+  },
+  {
+    "file": "grade4_0083ee8054ee.png",
+    "id_code": "0083ee8054ee",
+    "diagnosis": 4,
+    "quality_status": "acceptable",
+    "quality_score": 37.42
+  },
+  {
+    "file": "poor_01.png",
+    "id_code": "002c21358ce6",
+    "diagnosis": null,
+    "quality_status": "poor",
+    "quality_score": 1.07,
+    "note": "deliberately blurred/dark capture for testing the retake flow"
+  },
+  {
+    "file": "poor_02.png",
+    "id_code": "000c1434d8d7",
+    "diagnosis": null,
+    "quality_status": "poor",
+    "quality_score": 1.99,
+    "note": "deliberately blurred/dark capture for testing the retake flow"
+  }
+]
